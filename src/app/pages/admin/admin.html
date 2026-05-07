@@ -1,0 +1,91 @@
+<div class="admin-page">
+
+  <!-- Header -->
+  <header class="admin-header">
+    <div class="header-inner">
+      <a class="wordmark" routerLink="/">
+        <span class="wordmark-icon">◆</span> isabella
+      </a>
+      <nav class="breadcrumb">
+        <a routerLink="/" class="breadcrumb-link">Oversigt</a>
+        <span class="breadcrumb-sep">/</span>
+        <span class="breadcrumb-current">Admin</span>
+      </nav>
+    </div>
+  </header>
+
+  <div class="admin-content">
+    <div class="admin-title-row">
+      <div>
+        <h1 class="admin-title">Projektstyring</h1>
+        <p class="admin-subtitle">Opret, rediger og arkiver projekter.</p>
+      </div>
+      <button class="btn-primary" (click)="openNew()">
+        <span aria-hidden="true">+</span> Nyt projekt
+      </button>
+    </div>
+
+    <!-- Project table -->
+    <div class="project-table-wrap">
+      <table class="project-table">
+        <thead>
+          <tr>
+            <th>Navn</th>
+            <th>Status</th>
+            <th>Version</th>
+            <th>Startdato</th>
+            <th>Næste milepæl</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (p of projects(); track p.id) {
+            <tr class="project-row">
+              <td class="project-name-cell">
+                <button class="project-link" (click)="goToProject(p.id)">{{ p.name }}</button>
+                <span class="project-desc-short">{{ p.description | slice:0:60 }}{{ p.description.length > 60 ? '…' : '' }}</span>
+              </td>
+              <td><span class="status-badge status-{{ p.status }}">{{ statusLabel(p.status) }}</span></td>
+              <td><code class="version-code">{{ p.version }}</code></td>
+              <td class="muted">{{ p.startDate | date:'d. MMM yyyy' }}</td>
+              <td class="muted">
+                @if (p.nextMilestone) {
+                  <span>{{ p.nextMilestone.title }}</span>
+                  <span class="milestone-date"> · {{ p.nextMilestone.date | date:'d. MMM' }}</span>
+                } @else {
+                  <span class="none">—</span>
+                }
+              </td>
+              <td class="actions-cell">
+                @if (deleteConfirmId() === p.id) {
+                  <span class="confirm-text">Slet?</span>
+                  <button class="btn-danger-sm" (click)="doDelete(p.id)">Ja, slet</button>
+                  <button class="btn-ghost-sm" (click)="cancelDelete()">Annuller</button>
+                } @else {
+                  <button class="btn-ghost-sm" (click)="openEdit(p)">Rediger</button>
+                  <button class="btn-ghost-sm danger" (click)="confirmDelete(p.id)">Slet</button>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+
+      @if (projects().length === 0) {
+        <div class="empty-state">
+          <p>Ingen projekter endnu. Opret det første.</p>
+          <button class="btn-primary" (click)="openNew()">+ Nyt projekt</button>
+        </div>
+      }
+    </div>
+  </div>
+</div>
+
+<!-- Slide-in panel -->
+@if (panelOpen()) {
+  <app-project-form-panel
+    [project]="editingProject()"
+    (saved)="onSaved()"
+    (cancelled)="closePanel()"
+  />
+}

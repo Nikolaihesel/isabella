@@ -1,0 +1,105 @@
+<div class="panel-backdrop" (click)="cancel()" aria-hidden="true"></div>
+
+<aside class="form-panel" role="dialog" aria-modal="true"
+  [attr.aria-label]="project() ? 'Rediger projekt' : 'Nyt projekt'">
+
+  <div class="panel-header">
+    <h2 class="panel-title">{{ project() ? 'Rediger projekt' : 'Nyt projekt' }}</h2>
+    <button class="panel-close" (click)="cancel()" aria-label="Luk">✕</button>
+  </div>
+
+  <div class="panel-body">
+
+    <div class="field" [class.error]="submitted() && form().name.trim().length < 2">
+      <label class="field-label" for="pf-name">Projektnavn <span class="required">*</span></label>
+      <input id="pf-name" class="field-input" type="text" placeholder="fx Borgernær Digital Platform"
+        [value]="form().name" (input)="patchForm({ name: $any($event.target).value })" />
+      @if (submitted() && form().name.trim().length < 2) {
+        <span class="field-error">Navn er påkrævet</span>
+      }
+    </div>
+
+    <div class="field" [class.error]="submitted() && form().description.trim().length < 2">
+      <label class="field-label" for="pf-desc">Kort beskrivelse <span class="required">*</span></label>
+      <textarea id="pf-desc" class="field-input field-textarea" rows="2"
+        placeholder="Én sætning der forklarer hvad projektet handler om"
+        [value]="form().description"
+        (input)="patchForm({ description: $any($event.target).value })"></textarea>
+      @if (submitted() && form().description.trim().length < 2) {
+        <span class="field-error">Beskrivelse er påkrævet</span>
+      }
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label class="field-label" for="pf-status">Status</label>
+        <select id="pf-status" class="field-input field-select"
+          [value]="form().status"
+          (change)="patchForm({ status: $any($event.target).value })">
+          @for (opt of statusOptions; track opt.value) {
+            <option [value]="opt.value">{{ opt.label }}</option>
+          }
+        </select>
+      </div>
+      <div class="field">
+        <label class="field-label" for="pf-version">Version</label>
+        <input id="pf-version" class="field-input" type="text" placeholder="1.0.0"
+          [value]="form().version" (input)="patchForm({ version: $any($event.target).value })" />
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field-label" for="pf-start">Startdato</label>
+      <input id="pf-start" class="field-input" type="date"
+        [value]="form().startDate" (input)="patchForm({ startDate: $any($event.target).value })" />
+    </div>
+
+    <div class="field">
+      <label class="field-label" for="pf-tags">Tags <span class="field-hint">(kommasepareret)</span></label>
+      <input id="pf-tags" class="field-input" type="text" placeholder="API, SharePoint, borgerservice"
+        [value]="form().tags" (input)="patchForm({ tags: $any($event.target).value })" />
+    </div>
+
+    <div class="field">
+      <label class="field-label" for="pf-bg">Baggrund</label>
+      <textarea id="pf-bg" class="field-input field-textarea" rows="3"
+        placeholder="Hvorfor eksisterer dette projekt? Hvad er konteksten?"
+        [value]="form().background"
+        (input)="patchForm({ background: $any($event.target).value })"></textarea>
+    </div>
+
+    <div class="field">
+      <label class="field-label">Mål</label>
+      @for (goal of form().goals; track $index) {
+        <div class="goal-row">
+          <input class="field-input" type="text" placeholder="Beskriv et mål…"
+            [value]="goal" (input)="updateGoal($index, $any($event.target).value)" />
+          @if (form().goals.length > 1) {
+            <button class="goal-remove" (click)="removeGoal($index)" aria-label="Fjern mål">✕</button>
+          }
+        </div>
+      }
+      <button class="btn-add-goal" (click)="addGoal()">+ Tilføj mål</button>
+    </div>
+
+    <div class="field">
+      <label class="field-label">Næste milepæl <span class="field-hint">(valgfri)</span></label>
+      <div class="field-row">
+        <input class="field-input" type="text" placeholder="Titel på milepæl"
+          [value]="form().milestoneTitle"
+          (input)="patchForm({ milestoneTitle: $any($event.target).value })" />
+        <input class="field-input" type="date"
+          [value]="form().milestoneDate"
+          (input)="patchForm({ milestoneDate: $any($event.target).value })" />
+      </div>
+    </div>
+
+  </div>
+
+  <div class="panel-footer">
+    <button class="btn-ghost" (click)="cancel()">Annuller</button>
+    <button class="btn-primary" (click)="save()">
+      {{ project() ? 'Gem ændringer' : 'Opret projekt' }}
+    </button>
+  </div>
+</aside>

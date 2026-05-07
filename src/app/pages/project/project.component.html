@@ -1,0 +1,143 @@
+<div class="project-page">
+
+  <!-- ── Header / Breadcrumb ── -->
+  <header class="header">
+    <div class="header-inner">
+      <a class="wordmark" routerLink="/">
+        <span class="wordmark-icon">◆</span>
+        isabella
+      </a>
+      <nav class="breadcrumb" aria-label="Brødkrumme">
+        <a routerLink="/" class="breadcrumb-link">Oversigt</a>
+        <span class="breadcrumb-sep" aria-hidden="true">/</span>
+        @if (project()) {
+          <span class="breadcrumb-current">{{ project()!.name }}</span>
+        }
+      </nav>
+    </div>
+  </header>
+
+  @if (project()) {
+    <!-- ── Project title bar ── -->
+    <div class="project-title-bar">
+      <div class="project-title-inner">
+        <div class="project-title-left">
+          <div class="project-heading-row">
+            <h1 class="project-name">{{ project()!.name }}</h1>
+            <span class="status-badge status-{{ project()!.status }}">
+              {{ project()!.status === 'active' ? 'Aktiv' : project()!.status === 'paused' ? 'Pause' : project()!.status === 'completed' ? 'Afsluttet' : 'Arkiveret' }}
+            </span>
+          </div>
+          <p class="project-desc">{{ project()!.description }}</p>
+        </div>
+        <div class="project-title-right">
+          <span class="version-badge">v{{ project()!.version }}</span>
+          <button class="btn-edit" (click)="openEdit()">
+            <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+              <path d="M9.5 2.5l2 2L4 12H2v-2L9.5 2.5z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+            </svg>
+            Rediger
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Widget Grid ── -->
+    <div class="widget-area">
+      <div class="widget-columns" cdkDropListGroup>
+
+        <!-- Left column -->
+        <div
+          cdkDropList
+          id="left-list"
+          class="widget-column"
+          [cdkDropListData]="leftWidgets()"
+          [cdkDropListConnectedTo]="['right-list']"
+          (cdkDropListDropped)="drop($event)"
+        >
+          @for (widget of leftWidgets(); track widget.id) {
+            <div cdkDrag class="widget-wrapper" [cdkDragData]="widget">
+              <div class="widget-card card">
+                <div class="widget-header" cdkDragHandle>
+                  <div class="drag-handle" aria-label="Træk for at flytte" title="Flyt widget">
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                      <circle cx="4" cy="3" r="1.2" fill="currentColor"/>
+                      <circle cx="10" cy="3" r="1.2" fill="currentColor"/>
+                      <circle cx="4" cy="7" r="1.2" fill="currentColor"/>
+                      <circle cx="10" cy="7" r="1.2" fill="currentColor"/>
+                      <circle cx="4" cy="11" r="1.2" fill="currentColor"/>
+                      <circle cx="10" cy="11" r="1.2" fill="currentColor"/>
+                    </svg>
+                  </div>
+                  <h2 class="widget-title">{{ widget.title }}</h2>
+                </div>
+                <div class="widget-content">
+                  @switch (widget.type) {
+                    @case ('project-info')    { <app-project-info-widget   [projectId]="id()" /> }
+                    @case ('people')          { <app-people-widget         [projectId]="id()" /> }
+                  }
+                </div>
+              </div>
+              <!-- Drag placeholder -->
+              <div class="drag-placeholder" *cdkDragPlaceholder></div>
+            </div>
+          }
+        </div>
+
+        <!-- Right column -->
+        <div
+          cdkDropList
+          id="right-list"
+          class="widget-column"
+          [cdkDropListData]="rightWidgets()"
+          [cdkDropListConnectedTo]="['left-list']"
+          (cdkDropListDropped)="drop($event)"
+        >
+          @for (widget of rightWidgets(); track widget.id) {
+            <div cdkDrag class="widget-wrapper" [cdkDragData]="widget">
+              <div class="widget-card card">
+                <div class="widget-header" cdkDragHandle>
+                  <div class="drag-handle" aria-label="Træk for at flytte" title="Flyt widget">
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                      <circle cx="4" cy="3" r="1.2" fill="currentColor"/>
+                      <circle cx="10" cy="3" r="1.2" fill="currentColor"/>
+                      <circle cx="4" cy="7" r="1.2" fill="currentColor"/>
+                      <circle cx="10" cy="7" r="1.2" fill="currentColor"/>
+                      <circle cx="4" cy="11" r="1.2" fill="currentColor"/>
+                      <circle cx="10" cy="11" r="1.2" fill="currentColor"/>
+                    </svg>
+                  </div>
+                  <h2 class="widget-title">{{ widget.title }}</h2>
+                </div>
+                <div class="widget-content">
+                  @switch (widget.type) {
+                    @case ('timeline')      { <app-timeline-widget      [projectId]="id()" /> }
+                    @case ('decision-log')  { <app-decision-log-widget  [projectId]="id()" /> }
+                    @case ('meeting-notes') { <app-meeting-notes-widget [projectId]="id()" /> }
+                  }
+                </div>
+              </div>
+              <div class="drag-placeholder" *cdkDragPlaceholder></div>
+            </div>
+          }
+        </div>
+
+      </div>
+    </div>
+
+  } @else {
+    <div class="not-found">
+      <p>Projekt ikke fundet.</p>
+      <a routerLink="/" class="back-link">← Tilbage til oversigt</a>
+    </div>
+  }
+
+</div>
+
+@if (panelOpen() && project()) {
+  <app-project-form-panel
+    [project]="project()!"
+    (saved)="onSaved()"
+    (cancelled)="closePanel()"
+  />
+}

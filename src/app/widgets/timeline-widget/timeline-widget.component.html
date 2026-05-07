@@ -1,0 +1,100 @@
+<div class="timeline-controls">
+  <div class="range-tabs">
+    @for (r of ranges; track r.key) {
+      <button
+        class="range-tab"
+        [class.active]="timeRange() === r.key"
+        (click)="setTimeRange(r.key)"
+      >{{ r.label }}</button>
+    }
+  </div>
+  <div class="search-wrap">
+    <svg class="search-icon" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+      <circle cx="6" cy="6" r="4.25" stroke="currentColor" stroke-width="1.5"/>
+      <path d="M9.5 9.5L12 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+    <input
+      class="search-input"
+      type="search"
+      placeholder="Søg i tidslinje…"
+      [ngModel]="searchQuery()"
+      (ngModelChange)="searchQuery.set($event); selectedEvent.set(null)"
+      aria-label="Søg i tidslinje"
+    />
+  </div>
+</div>
+
+@if (filteredEvents().length === 0) {
+  <p class="empty">Ingen hændelser i den valgte periode.</p>
+} @else {
+  <!-- Horizontal rail -->
+  <div class="rail-wrap">
+    <div class="rail">
+      <div class="rail-line"></div>
+      @for (pos of eventPositions(); track pos.event.id) {
+        <button
+          class="pin pin-{{ pos.event.type }}"
+          [class.active]="selectedEvent()?.id === pos.event.id"
+          [style.left.%]="pos.pct"
+          (click)="selectEvent(pos.event)"
+          [title]="pos.event.title"
+          [attr.aria-label]="typeLabel(pos.event.type) + ': ' + pos.event.title"
+          [attr.aria-expanded]="selectedEvent()?.id === pos.event.id"
+        >
+          <span class="pin-icon" aria-hidden="true">{{ typeIcon(pos.event.type) }}</span>
+          <span class="pin-date">{{ pos.event.date | date:'d. MMM' }}</span>
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- Detail panel -->
+  @if (selectedEvent(); as ev) {
+    <div class="detail-panel" role="region" [attr.aria-label]="ev.title">
+      <div class="detail-header">
+        <span class="detail-badge detail-badge-{{ ev.type }}">{{ typeLabel(ev.type) }}</span>
+        <span class="detail-date">{{ ev.date | date:'d. MMMM yyyy' }}</span>
+        <button class="detail-close" (click)="selectedEvent.set(null)" aria-label="Luk">✕</button>
+      </div>
+      <h3 class="detail-title">{{ ev.title }}</h3>
+
+      @if (ev.notes) {
+        <p class="detail-notes">{{ ev.notes }}</p>
+      }
+
+      @if (ev.attendees && ev.attendees.length > 0) {
+        <div class="detail-section">
+          <span class="detail-label">Deltagere</span>
+          <div class="attendees">
+            @for (a of ev.attendees; track a) {
+              <span class="attendee-chip">{{ a }}</span>
+            }
+          </div>
+        </div>
+      }
+
+      @if (ev.aiSummary) {
+        <div class="ai-summary">
+          <span class="ai-badge" aria-hidden="true">AI</span>
+          <p>{{ ev.aiSummary }}</p>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Event list below rail -->
+  <div class="event-list">
+    @for (pos of eventPositions(); track pos.event.id) {
+      <button
+        class="event-list-item"
+        [class.active]="selectedEvent()?.id === pos.event.id"
+        (click)="selectEvent(pos.event)"
+      >
+        <span class="event-list-dot dot-{{ pos.event.type }}"></span>
+        <span class="event-list-date">{{ pos.event.date | date:'d. MMM' }}</span>
+        <span class="event-list-title">{{ pos.event.title }}</span>
+        <span class="event-list-badge badge-{{ pos.event.type }}">{{ typeLabel(pos.event.type) }}</span>
+      </button>
+    }
+  </div>
+}

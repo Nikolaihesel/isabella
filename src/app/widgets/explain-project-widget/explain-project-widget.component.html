@@ -1,0 +1,20 @@
+<div class="explain-card">
+  <div class="explain-header">
+    <span class="ai-badge" aria-hidden="true">AI</span>
+    <span class="explain-title">Hvad handler dette projekt om?</span>
+  </div>
+  <div class="explain-body">
+    @for (paragraph of summary().split('\n\n'); track $index) {
+      @if (paragraph.trim()) {
+        <p>{{ paragraph.trim() }}</p>
+      }
+    }
+  </div>
+  <div class="explain-disclaimer">
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <circle cx="6" cy="6" r="5.25" stroke="currentColor" stroke-width="1.5"/>
+      <path d="M6 5.5V8.5M6 3.5V4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+    Denne opsummering er genereret på baggrund af tilgængeligt projektdata og bør ikke bruges som eneste kilde til forståelse af projektet.
+  </div>
+</div>

@@ -1,0 +1,24 @@
+@if (people().length === 0) {
+  <p class="empty">Ingen teammedlemmer tilknyttet dette projekt.</p>
+} @else {
+  <div class="people-grid">
+    @for (person of people(); track person.id) {
+      <div class="person-card">
+        <div class="person-top">
+          <div class="avatar">{{ person.initials }}</div>
+          <div class="person-info">
+            <span class="person-name">{{ person.name }}</span>
+            <span class="person-role">{{ person.role }}</span>
+          </div>
+          <div class="workload-dot workload-{{ person.workload }}" [title]="workloadLabel(person.workload)"></div>
+        </div>
+        <div class="person-contributions">
+          @for (c of person.contributions; track c) {
+            <span class="contribution-tag">{{ c }}</span>
+          }
+        </div>
+        <p class="availability">{{ person.availability }}</p>
+      </div>
+    }
+  </div>
+}

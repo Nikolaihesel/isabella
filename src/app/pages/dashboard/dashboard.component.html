@@ -1,0 +1,161 @@
+<div class="dashboard">
+
+  <!-- ── Header ── -->
+  <header class="header">
+    <div class="header-inner">
+      <a class="wordmark" routerLink="/">
+        <span class="wordmark-icon">◆</span>
+        isabella
+      </a>
+      <div class="search-wrap">
+        <svg class="search-icon" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M17.5 17.5L13.875 13.875M15.8333 9.16667C15.8333 12.8486 12.8486 15.8333 9.16667 15.8333C5.48477 15.8333 2.5 12.8486 2.5 9.16667C2.5 5.48477 5.48477 2.5 9.16667 2.5C12.8486 2.5 15.8333 5.48477 15.8333 9.16667Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <input
+          type="search"
+          class="search-input"
+          placeholder="Søg projekter, tags..."
+          [value]="searchQuery()"
+          (input)="onSearch($event)"
+          aria-label="Søg projekter"
+        />
+      </div>
+      <a class="admin-link" routerLink="/admin" title="Projektstyring">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <circle cx="8" cy="8" r="2.5" stroke="currentColor" stroke-width="1.4"/>
+          <path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.05 3.05l1.41 1.41M11.54 11.54l1.41 1.41M3.05 12.95l1.41-1.41M11.54 4.46l1.41-1.41" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+        </svg>
+        Admin
+      </a>
+      <button class="btn-new-project" (click)="openNew()">+ Nyt projekt</button>
+    </div>
+  </header>
+
+@if (panelOpen()) {
+  <app-project-form-panel
+    [project]="null"
+    (saved)="onSaved()"
+    (cancelled)="closePanel()"
+  />
+}
+
+  <!-- ── Main ── -->
+  <main class="main-content">
+
+    <!-- Projects section -->
+    <section class="section" aria-labelledby="projects-heading">
+      <div class="section-header">
+        <h2 id="projects-heading" class="section-heading">Projekter</h2>
+        <span class="project-count">{{ filteredProjects().length }} projekter</span>
+      </div>
+
+      @if (filteredProjects().length === 0) {
+        <div class="empty-state">
+          <p>Ingen projekter matcher din søgning.</p>
+        </div>
+      } @else {
+        <div class="project-grid">
+          @for (project of filteredProjects(); track project.id) {
+            <a class="project-card card" [routerLink]="['/project', project.id]" [attr.aria-label]="'Åbn projekt: ' + project.name">
+              <div class="project-card-header">
+                <div class="project-card-title-row">
+                  <h3 class="project-card-title">{{ project.name }}</h3>
+                  <span class="status-badge status-{{ project.status }}">{{ statusLabel(project.status) }}</span>
+                </div>
+                <p class="project-card-desc">{{ project.description }}</p>
+              </div>
+
+              <div class="project-card-meta">
+                <div class="meta-row">
+                  <span class="meta-label">Version</span>
+                  <span class="meta-value version">{{ project.version }}</span>
+                </div>
+                <div class="meta-row">
+                  <span class="meta-label">Seneste aktivitet</span>
+                  <span class="meta-value">{{ daysAgo(project.lastActivity) }}</span>
+                </div>
+                @if (project.nextMilestone) {
+                  <div class="meta-row">
+                    <span class="meta-label">Næste milepæl</span>
+                    <span class="meta-value milestone">
+                      {{ project.nextMilestone.title }}
+                      <span class="milestone-date">{{ project.nextMilestone.date | date:'d. MMM' }}</span>
+                    </span>
+                  </div>
+                }
+              </div>
+
+              <div class="project-card-tags">
+                @for (tag of project.tags; track tag) {
+                  <span class="tag">{{ tag }}</span>
+                }
+              </div>
+
+              <div class="project-card-arrow" aria-hidden="true">
+                <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </a>
+          }
+        </div>
+      }
+    </section>
+
+    <!-- Bottom two-col layout -->
+    <div class="bottom-grid">
+
+      <!-- Recent changes -->
+      <section class="section" aria-labelledby="recent-heading">
+        <h2 id="recent-heading" class="section-heading">Seneste aktivitet</h2>
+        <div class="activity-list card">
+          @for (event of recentActivity(); track event.id) {
+            <div class="activity-item">
+              <div class="activity-icon event-{{ event.type }}" aria-hidden="true">
+                @switch (event.type) {
+                  @case ('milestone') { 🏁 }
+                  @case ('meeting')   { 💬 }
+                  @case ('release')   { 🚀 }
+                  @case ('decision')  { ✓ }
+                }
+              </div>
+              <div class="activity-body">
+                <span class="activity-title">{{ event.title }}</span>
+                <span class="activity-meta">
+                  <a class="activity-project-link" [routerLink]="['/project', event['projectId']]">
+                    {{ event['projectName'] }}
+                  </a>
+                  · {{ eventTypeLabel(event.type) }} · {{ daysAgo(event.date) }}
+                </span>
+              </div>
+            </div>
+          }
+        </div>
+      </section>
+
+      <!-- Needs attention -->
+      <section class="section" aria-labelledby="attention-heading">
+        <h2 id="attention-heading" class="section-heading">Kræver opmærksomhed</h2>
+        @if (needsAttention().length === 0) {
+          <div class="card attention-empty">
+            <span class="attention-empty-icon">✓</span>
+            <p>Alle projekter ser fine ud.</p>
+          </div>
+        } @else {
+          <div class="attention-list">
+            @for (project of needsAttention(); track project.id) {
+              <a class="attention-card card" [routerLink]="['/project', project.id]">
+                <div class="attention-card-top">
+                  <span class="attention-card-name">{{ project.name }}</span>
+                  <span class="status-badge status-{{ project.status }}">{{ statusLabel(project.status) }}</span>
+                </div>
+                <p class="attention-reason">{{ attentionReason(project) }}</p>
+              </a>
+            }
+          </div>
+        }
+      </section>
+
+    </div>
+  </main>
+</div>

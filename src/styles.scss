@@ -1,0 +1,251 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+// ─── Design Tokens ────────────────────────────────────────────────────────────
+:root {
+  --color-bg: #f8f9fa;
+  --color-surface: #ffffff;
+  --color-border: #e5e7eb;
+  --color-text: #1a1a2e;
+  --color-accent: #4f6ef7;
+  --color-accent-light: #eef1fe;
+  --color-muted: #6b7280;
+  --color-muted-light: #f3f4f6;
+
+  // Status
+  --status-active: #22c55e;
+  --status-active-bg: #f0fdf4;
+  --status-active-border: #bbf7d0;
+  --status-active-text: #166534;
+  --status-paused: #f59e0b;
+  --status-paused-bg: #fffbeb;
+  --status-paused-border: #fde68a;
+  --status-paused-text: #92400e;
+  --status-completed: #3b82f6;
+  --status-completed-bg: #eff6ff;
+  --status-completed-border: #bfdbfe;
+  --status-completed-text: #1e40af;
+  --status-archived: #9ca3af;
+  --status-archived-bg: #f9fafb;
+  --status-archived-border: #e5e7eb;
+  --status-archived-text: #374151;
+
+  // Workload
+  --workload-low: #22c55e;
+  --workload-medium: #f59e0b;
+  --workload-high: #ef4444;
+  --workload-unavailable: #9ca3af;
+
+  // Typography
+  --font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: 1.875rem;
+
+  // Spacing
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+
+  // Border radius
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
+
+  // Shadows
+  --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.06), 0 1px 2px -1px rgb(0 0 0 / 0.04);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+  --shadow-lg: 0 10px 20px -3px rgb(0 0 0 / 0.07), 0 4px 6px -4px rgb(0 0 0 / 0.04);
+
+  // Transitions
+  --transition-fast: 120ms ease;
+  --transition-base: 200ms ease;
+}
+
+// ─── Reset ────────────────────────────────────────────────────────────────────
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+}
+
+a {
+  color: var(--color-accent);
+  text-decoration: none;
+  &:hover { text-decoration: underline; }
+}
+
+img, svg { display: block; }
+
+// ─── Utility Classes ──────────────────────────────────────────────────────────
+
+// Card
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+// Status badge
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+
+  &::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  &.status-active {
+    color: var(--status-active-text);
+    background: var(--status-active-bg);
+    border: 1px solid var(--status-active-border);
+    &::before { background: var(--status-active); }
+  }
+  &.status-paused {
+    color: var(--status-paused-text);
+    background: var(--status-paused-bg);
+    border: 1px solid var(--status-paused-border);
+    &::before { background: var(--status-paused); }
+  }
+  &.status-completed {
+    color: var(--status-completed-text);
+    background: var(--status-completed-bg);
+    border: 1px solid var(--status-completed-border);
+    &::before { background: var(--status-completed); }
+  }
+  &.status-archived {
+    color: var(--status-archived-text);
+    background: var(--status-archived-bg);
+    border: 1px solid var(--status-archived-border);
+    &::before { background: var(--status-archived); }
+  }
+}
+
+// Tag pill
+.tag {
+  display: inline-block;
+  padding: 2px var(--space-2);
+  background: var(--color-muted-light);
+  color: var(--color-muted);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  border: 1px solid var(--color-border);
+}
+
+// Source badge
+.source-badge {
+  display: inline-block;
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+
+  &.source-Teams       { background: #ede9fe; color: #5b5fc7; }
+  &.source-SharePoint  { background: #e0f2fe; color: #0369a1; }
+  &.source-Jira        { background: #eff6ff; color: #1d4ed8; }
+  &.source-Manual      { background: #f3f4f6; color: #6b7280; }
+}
+
+// Avatar
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--color-accent-light);
+  color: var(--color-accent);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+// Workload dot
+.workload-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+
+  &.workload-low         { background: var(--workload-low); }
+  &.workload-medium      { background: var(--workload-medium); }
+  &.workload-high        { background: var(--workload-high); }
+  &.workload-unavailable { background: var(--workload-unavailable); }
+}
+
+// Section title
+.section-title {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-muted);
+  margin-bottom: var(--space-3);
+}
+
+// ─── CDK Drag-Drop Overrides ──────────────────────────────────────────────────
+.cdk-drag-preview {
+  box-shadow: var(--shadow-lg) !important;
+  border-radius: var(--radius-lg) !important;
+  opacity: 0.95;
+}
+
+.cdk-drag-placeholder {
+  opacity: 0;
+  background: var(--color-accent-light);
+  border: 2px dashed var(--color-accent);
+  border-radius: var(--radius-lg);
+  min-height: 80px;
+}
+
+.cdk-drag-animating {
+  transition: transform 220ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.cdk-drop-list-dragging .cdk-drag:not(.cdk-drag-placeholder) {
+  transition: transform 220ms cubic-bezier(0, 0, 0.2, 1);
+}
+

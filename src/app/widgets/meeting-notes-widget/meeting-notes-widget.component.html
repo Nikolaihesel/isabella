@@ -1,0 +1,68 @@
+@if (meetings().length === 0) {
+  <p class="empty">Ingen mødenoter registreret endnu.</p>
+} @else {
+  <div class="meetings-list">
+    @for (meeting of meetings(); track meeting.id) {
+      <div class="meeting-item">
+        <div class="meeting-header">
+          <div class="meeting-title-row">
+            <span class="meeting-title">{{ meeting.title }}</span>
+            @if (meeting.transcriptAvailable) {
+              <span class="transcript-badge" title="Transskript tilgængeligt">Transskript</span>
+            }
+          </div>
+          <div class="meeting-meta">
+            <span class="meeting-date">{{ meeting.date | date:'d. MMM yyyy' }}</span>
+          </div>
+        </div>
+
+        <!-- Attendee avatars -->
+        <div class="attendees-row">
+          @for (attendee of meeting.attendees; track attendee) {
+            <div class="avatar avatar-sm" [title]="attendee">{{ getInitials(attendee) }}</div>
+          }
+          <span class="attendee-count">{{ meeting.attendees.length }} deltagere</span>
+        </div>
+
+        <!-- AI Summary -->
+        <div class="summary-block">
+          <div class="summary-label">
+            <span class="ai-badge" aria-hidden="true">AI</span>
+            Mødeopsummering
+          </div>
+          @if (!isExpanded(meeting.id)) {
+            <p class="summary-preview">{{ summaryPreview(meeting.aiSummary) }}</p>
+            <button class="expand-btn" (click)="toggleExpand(meeting.id)" aria-expanded="false">
+              Vis fuld opsummering ▾
+            </button>
+          } @else {
+            <p class="summary-full">{{ meeting.aiSummary }}</p>
+            <button class="expand-btn" (click)="toggleExpand(meeting.id)" aria-expanded="true">
+              Skjul opsummering ▴
+            </button>
+          }
+        </div>
+
+        <!-- Actions -->
+        <div class="meeting-actions">
+          @if (meeting.transcriptAvailable && meeting.sourceLink) {
+            <a class="action-link" [href]="meeting.sourceLink" target="_blank" rel="noopener noreferrer">
+              Se transskript
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M9 3L3 9M3 3H9V9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+          }
+          @if (meeting.sourceLink) {
+            <a class="action-link" [href]="meeting.sourceLink" target="_blank" rel="noopener noreferrer">
+              Åbn i Teams
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M9 3L3 9M3 3H9V9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+          }
+        </div>
+      </div>
+    }
+  </div>
+}

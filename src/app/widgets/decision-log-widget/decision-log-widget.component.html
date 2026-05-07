@@ -1,0 +1,34 @@
+@if (decisions().length === 0) {
+  <p class="empty">Ingen beslutninger registreret endnu.</p>
+} @else {
+  <div class="decisions-list">
+    @for (decision of decisions(); track decision.id) {
+      <div class="decision-item">
+        <div class="decision-header">
+          <div class="decision-title-row">
+            <span class="decision-title">{{ decision.title }}</span>
+            <span class="source-badge source-{{ decision.sourceType }}">{{ decision.sourceType }}</span>
+          </div>
+          <div class="decision-meta">
+            <span class="decision-date">{{ decision.date | date:'d. MMM yyyy' }}</span>
+            <span class="decision-sep" aria-hidden="true">·</span>
+            <span class="decision-by">
+              @for (person of decision.madeBy; track person; let last = $last) {
+                {{ person }}{{ !last ? ', ' : '' }}
+              }
+            </span>
+          </div>
+        </div>
+        <p class="decision-desc">{{ decision.description }}</p>
+        @if (decision.sourceLink) {
+          <a class="decision-link" [href]="decision.sourceLink" target="_blank" rel="noopener noreferrer">
+            Vis kilde
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M9 3L3 9M3 3H9V9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+        }
+      </div>
+    }
+  </div>
+}

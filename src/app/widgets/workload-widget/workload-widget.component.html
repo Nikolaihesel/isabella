@@ -1,0 +1,35 @@
+@if (people().length === 0) {
+  <p class="empty">Ingen teammedlemmer tilknyttet dette projekt.</p>
+} @else {
+  <div class="workload-list">
+    @for (person of people(); track person.id) {
+      <div class="workload-row">
+        <div class="workload-person">
+          <div class="avatar">{{ person.initials }}</div>
+          <div class="person-info">
+            <span class="person-name">{{ person.name }}</span>
+            <span class="person-role">{{ person.role }}</span>
+          </div>
+        </div>
+
+        <div class="workload-status">
+          @if (person.workload !== 'unavailable') {
+            <div class="workload-bar-wrap" [attr.aria-label]="workloadLabel(person.workload)">
+              <div
+                class="workload-bar workload-bar-{{ person.workload }}"
+                [style.width.%]="workloadPercent(person.workload)"
+              ></div>
+            </div>
+          } @else {
+            <span class="unavailable-badge">Ikke tilgængelig</span>
+          }
+          <span class="workload-label workload-text-{{ person.workload }}">
+            {{ workloadLabel(person.workload) }}
+          </span>
+        </div>
+
+        <p class="availability-note">{{ person.availability }}</p>
+      </div>
+    }
+  </div>
+}
