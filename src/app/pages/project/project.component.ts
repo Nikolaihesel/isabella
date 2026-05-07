@@ -49,36 +49,27 @@ export class ProjectComponent {
   closePanel() { this.panelOpen.set(false); }
   onSaved() { this.closePanel(); }
 
-  leftWidgets = signal<WidgetConfig[]>([
+  leftWidgets: WidgetConfig[] = [
     { id: 'project-info', type: 'project-info', title: 'Projektinfo' },
     { id: 'people',       type: 'people',        title: 'Team' },
-  ]);
+  ];
 
-  rightWidgets = signal<WidgetConfig[]>([
+  rightWidgets: WidgetConfig[] = [
     { id: 'timeline',   type: 'timeline',      title: 'Tidslinje' },
     { id: 'decisions',  type: 'decision-log',  title: 'Beslutningslog' },
     { id: 'meetings',   type: 'meeting-notes', title: 'Mødenoter' },
-  ]);
+  ];
 
   drop(event: CdkDragDrop<WidgetConfig[]>) {
     if (event.previousContainer === event.container) {
-      const items = [...event.container.data];
-      moveItemInArray(items, event.previousIndex, event.currentIndex);
-      const isLeft = event.container.id === 'left-list';
-      if (isLeft) this.leftWidgets.set(items);
-      else this.rightWidgets.set(items);
+      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
-      const prevItems = [...event.previousContainer.data];
-      const currItems = [...event.container.data];
-      transferArrayItem(prevItems, currItems, event.previousIndex, event.currentIndex);
-      const isLeftPrev = event.previousContainer.id === 'left-list';
-      if (isLeftPrev) {
-        this.leftWidgets.set(prevItems);
-        this.rightWidgets.set(currItems);
-      } else {
-        this.rightWidgets.set(prevItems);
-        this.leftWidgets.set(currItems);
-      }
+      transferArrayItem(
+        event.previousContainer.data,
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex,
+      );
     }
   }
 }

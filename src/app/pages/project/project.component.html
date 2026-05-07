@@ -51,11 +51,11 @@
           cdkDropList
           id="left-list"
           class="widget-column"
-          [cdkDropListData]="leftWidgets()"
+          [cdkDropListData]="leftWidgets"
           [cdkDropListConnectedTo]="['right-list']"
           (cdkDropListDropped)="drop($event)"
         >
-          @for (widget of leftWidgets(); track widget.id) {
+          @for (widget of leftWidgets; track widget.id) {
             <div cdkDrag class="widget-wrapper" [cdkDragData]="widget">
               <div class="widget-card card">
                 <div class="widget-header" cdkDragHandle>
@@ -89,11 +89,11 @@
           cdkDropList
           id="right-list"
           class="widget-column"
-          [cdkDropListData]="rightWidgets()"
+          [cdkDropListData]="rightWidgets"
           [cdkDropListConnectedTo]="['left-list']"
           (cdkDropListDropped)="drop($event)"
         >
-          @for (widget of rightWidgets(); track widget.id) {
+          @for (widget of rightWidgets; track widget.id) {
             <div cdkDrag class="widget-wrapper" [cdkDragData]="widget">
               <div class="widget-card card">
                 <div class="widget-header" cdkDragHandle>
