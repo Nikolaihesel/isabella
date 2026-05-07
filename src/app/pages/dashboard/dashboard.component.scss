@@ -62,20 +62,40 @@
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  font-size: var(--font-size-xl);
-  font-weight: 700;
-  color: var(--color-text);
-  letter-spacing: -0.03em;
   text-decoration: none;
   flex-shrink: 0;
 
   &:hover { text-decoration: none; }
 }
 
+.wordmark-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.wordmark-text > :first-child {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--color-text);
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+.wordmark-meaning {
+  display: block;
+  font-size: 9px;
+  font-weight: 400;
+  color: var(--color-muted);
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
 .wordmark-icon {
   color: var(--color-accent);
   font-size: 1.1em;
   line-height: 1;
+  flex-shrink: 0;
 }
 
 .search-wrap {
