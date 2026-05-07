@@ -75,6 +75,9 @@
                   @switch (widget.type) {
                     @case ('project-info')    { <app-project-info-widget   [projectId]="id()" /> }
                     @case ('people')          { <app-people-widget         [projectId]="id()" /> }
+                    @case ('timeline')        { <app-timeline-widget       [projectId]="id()" /> }
+                    @case ('decision-log')    { <app-decision-log-widget   [projectId]="id()" /> }
+                    @case ('meeting-notes')   { <app-meeting-notes-widget  [projectId]="id()" /> }
                   }
                 </div>
               </div>
@@ -111,9 +114,11 @@
                 </div>
                 <div class="widget-content">
                   @switch (widget.type) {
-                    @case ('timeline')      { <app-timeline-widget      [projectId]="id()" /> }
-                    @case ('decision-log')  { <app-decision-log-widget  [projectId]="id()" /> }
-                    @case ('meeting-notes') { <app-meeting-notes-widget [projectId]="id()" /> }
+                    @case ('project-info')    { <app-project-info-widget   [projectId]="id()" /> }
+                    @case ('people')          { <app-people-widget         [projectId]="id()" /> }
+                    @case ('timeline')        { <app-timeline-widget       [projectId]="id()" /> }
+                    @case ('decision-log')    { <app-decision-log-widget   [projectId]="id()" /> }
+                    @case ('meeting-notes')   { <app-meeting-notes-widget  [projectId]="id()" /> }
                   }
                 </div>
               </div>
