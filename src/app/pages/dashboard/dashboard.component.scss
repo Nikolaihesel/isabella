@@ -64,8 +64,14 @@
   gap: var(--space-2);
   text-decoration: none;
   flex-shrink: 0;
-
   &:hover { text-decoration: none; }
+}
+
+.wordmark-icon {
+  color: var(--color-accent);
+  font-size: 14px;
+  line-height: 1;
+  flex-shrink: 0;
 }
 
 .wordmark-text {
@@ -74,7 +80,7 @@
   gap: 1px;
 }
 
-.wordmark-text > :first-child {
+.wordmark-name {
   font-size: var(--font-size-xl);
   font-weight: 700;
   color: var(--color-text);
@@ -83,19 +89,12 @@
 }
 
 .wordmark-meaning {
-  display: block;
   font-size: 9px;
   font-weight: 400;
   color: var(--color-muted);
-  letter-spacing: 0.01em;
+  letter-spacing: 0.02em;
   white-space: nowrap;
-}
-
-.wordmark-icon {
-  color: var(--color-accent);
-  font-size: 1.1em;
-  line-height: 1;
-  flex-shrink: 0;
+  opacity: 0.8;
 }
 
 .search-wrap {
